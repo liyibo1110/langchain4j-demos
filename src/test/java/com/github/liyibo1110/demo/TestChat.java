@@ -1,6 +1,11 @@
 package com.github.liyibo1110.demo;
 
+import dev.langchain4j.community.model.dashscope.QwenChatModel;
+import dev.langchain4j.community.model.dashscope.WanxImageModel;
+import dev.langchain4j.data.image.Image;
+import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
+import dev.langchain4j.model.output.Response;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -13,12 +18,54 @@ public class TestChat {
      * 这个演示key在新版本已经不能再用了
      */
     @Test
-    public void test1() {
+    public void testGPTDemo() {
         OpenAiChatModel model = OpenAiChatModel.builder()
                 .apiKey("demo")
                 .modelName("gpt-4o-mini")
                 .build();
         String answer = model.chat("你好，你是谁？");
         System.out.println(answer);
+    }
+
+    @Test
+    public void testDeepSeek() {
+        OpenAiChatModel model = OpenAiChatModel.builder()
+                .baseUrl("https://api.deepseek.com")
+                .apiKey("myApiKey")  // 换成自己的apiKey
+                .modelName("deepseek-chat")
+                .build();
+        String answer = model.chat("你好，你是谁？");
+        System.out.println(answer);
+    }
+
+    @Test
+    public void testDashScope() {
+        QwenChatModel model = QwenChatModel.builder()
+                //.baseUrl("https://dashscope.aliyuncs.com/compatible-mode/v1") // 不需要baseUrl
+                .apiKey("myApiKey")  // 换成自己的apiKey
+                .modelName("qwen3-max")
+                .build();
+        String answer = model.chat("你好，你是谁？");
+        System.out.println(answer);
+    }
+
+    @Test
+    public void testOllama() {
+        OllamaChatModel model = OllamaChatModel.builder()
+                .baseUrl("http://127.0.0.1:11434")
+                .modelName("deepseek-r1:1.5b")  // 这个模型是存在本地的
+                .build();
+        String answer = model.chat("你好，你是谁？");
+        System.out.println(answer);
+    }
+
+    @Test
+    public void testTextToImage() {
+        WanxImageModel model = WanxImageModel.builder()
+                .modelName("wan2.2-t2i-plus")
+                .apiKey("myApiKey")  // 换成自己的apiKey
+                .build();
+        Response<Image> response = model.generate("美女");
+        System.out.println(response.content().url());
     }
 }
