@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+
 /**
  * @author liyibo
  * @date 2025-10-31 17:32
@@ -28,6 +30,9 @@ public class ChatController {
 
     @Autowired
     private Config.Assistant assistant;
+
+    @Autowired
+    private Config.AssistantUnique assistantUnique;
 
     /**
      * 同步对话
@@ -68,8 +73,19 @@ public class ChatController {
 
     @GetMapping("/memoryChat")
     public String memoryChat(@RequestParam(defaultValue="我是李博士") String message) {
-        String answer1 = assistant.chat(message);
+        /*String answer1 = assistant.chat(message);
         String answer2 = assistant.chat("我是谁来着？");
+        return answer1 + "\r\n =========================================\r\n" + answer2;*/
+        String answer = assistant.chat(message, LocalDate.now().toString());
+        return answer;
+    }
+
+    @GetMapping("/memoryChatUnique")
+    public String memoryChatUnique(
+            Integer userId,
+            @RequestParam(defaultValue="我是李博士") String message) {
+        String answer1 = assistantUnique.chat(userId, message);
+        String answer2 = assistantUnique.chat(userId, "我是谁来着？");
         return answer1 + "\r\n =========================================\r\n" + answer2;
     }
 }
